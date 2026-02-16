@@ -15,6 +15,7 @@ var READER = bufio.NewReader(os.Stdin)
 func ENTER_COMMAND() {
 	print("> ")
 	command, _ := READER.ReadString('\n')
+
 	if len(command) > 1 {
 		key := strings.Split(
 			strings.TrimSpace(command), " ")[0]
@@ -22,6 +23,7 @@ func ENTER_COMMAND() {
 
 		if !_error {
 			fn := KEY_FUNCTION[key]
+
 			if fn != nil {
 				fn(event)
 				deep.LOG(event)
