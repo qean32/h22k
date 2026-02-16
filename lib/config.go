@@ -1,30 +1,34 @@
 package lib
 
 import (
+	"fmt"
+	"main/constants"
+	"main/deep"
 	"main/model"
 	"os"
-	"strings"
-	"time"
 )
 
 var KEY_FUNCTION = map[string]func(e model.Event){
-	"hash":   func(e model.Event) {},             // hash ключ пароль {сообщение} (-nl)
-	"g:key":  func(e model.Event) {},             // g:key
-	"g:log":  func(e model.Event) {},             // g:log
-	"c:log":  func(e model.Event) {},             // c:log (-nl -f)
-	"dihash": func(e model.Event) {},             // dihash ключ пароль (-nl)
-	"master": func(e model.Event) {},             // master (-nl)
-	"drop":   func(e model.Event) {},             // drop (-f)
-	"stop":   func(e model.Event) { os.Exit(0) }, // stop
-	"help":   func(e model.Event) {},             // help
+	"hash":   func(e model.Event) {}, // hash ключ пароль {сообщение} (-nl)
+	"dihash": func(e model.Event) {}, // dihash ключ пароль (-nl)
+	"g:key":  func(e model.Event) {}, // g:key
+	"c:log": func(e model.Event) {
+		deep.ClearFile(constants.LOG_PATH)
+	}, // c:log (-nl -f)
+	"master": func(e model.Event) {
+		deep.CreateFile(constants.LOG_PATH)
+		deep.CreateFile("/prime.asc")
+	}, // master (-nl)
+	"drop": func(e model.Event) { os.RemoveAll(constants.Root); os.Mkdir(constants.Root, 0755) }, // drop (-f)
+	"stop": func(e model.Event) { os.Exit(0) },                                                   // stop
+	"help": func(e model.Event) { fmt.Println(constants.HelpMessage) },                           // help
 }
 
-var KEY_PARSE = map[string]func(command string) (event model.Event, _error bool){
-	"hash": func(command string) (event model.Event, _error bool) {
+var KEY_PARSE = map[string]func(arr []string) (event model.Event, _error bool){
+	"hash": func(arr []string) (event model.Event, _error bool) {
 		event = model.Event{}
 		_error = false
-		arr := strings.Split(command, " ")
-		payload := getPaylaod(command)
+		payload := getPaylaod(arr)
 
 		if len(arr) < 3 || payload == "" {
 			_error = true
@@ -32,7 +36,7 @@ var KEY_PARSE = map[string]func(command string) (event model.Event, _error bool)
 		}
 
 		event = model.Event{
-			Time:     time.Now().Format("2006-01-02 15:04:05"),
+			Time:     deep.NewTime(),
 			Key:      arr[0],
 			Password: arr[1],
 			Payload:  payload,
@@ -40,25 +44,33 @@ var KEY_PARSE = map[string]func(command string) (event model.Event, _error bool)
 		}
 		return
 	},
-	"g:key": func(command string) (event model.Event, _error bool) {
-		event = model.Event{}
+	"g:key": func(arr []string) (event model.Event, _error bool) {
+		event = model.Event{
+			Time: deep.NewTime(),
+			Key:  arr[0],
+		}
 		_error = false
 		return
 	},
-	"g:log": func(command string) (event model.Event, _error bool) {
-		event = model.Event{}
+	"g:log": func(arr []string) (event model.Event, _error bool) {
+		event = model.Event{
+			Time: deep.NewTime(),
+			Key:  arr[0],
+		}
 		_error = false
 		return
 	},
-	"c:log": func(command string) (event model.Event, _error bool) {
-		event = model.Event{}
+	"c:log": func(arr []string) (event model.Event, _error bool) {
+		event = model.Event{
+			Time: deep.NewTime(),
+			Key:  arr[0],
+		}
 		_error = false
 		return
 	},
-	"dihash": func(command string) (event model.Event, _error bool) {
+	"dihash": func(arr []string) (event model.Event, _error bool) {
 		event = model.Event{}
 		_error = false
-		arr := strings.Split(command, " ")
 
 		if len(arr) < 3 {
 			_error = true
@@ -66,30 +78,42 @@ var KEY_PARSE = map[string]func(command string) (event model.Event, _error bool)
 		}
 
 		event = model.Event{
-			Time:     time.Now().Format("2006-01-02 15:04:05"),
+			Time:     deep.NewTime(),
 			Key:      arr[0],
 			Password: arr[1],
 			Flags:    filterIsFlag(arr),
 		}
 		return
 	},
-	"master": func(command string) (event model.Event, _error bool) {
-		event = model.Event{}
+	"master": func(arr []string) (event model.Event, _error bool) {
+		event = model.Event{
+			Time: deep.NewTime(),
+			Key:  arr[0],
+		}
 		_error = false
 		return
 	},
-	"drop": func(command string) (event model.Event, _error bool) {
-		event = model.Event{}
+	"drop": func(arr []string) (event model.Event, _error bool) {
+		event = model.Event{
+			Time: deep.NewTime(),
+			Key:  arr[0],
+		}
 		_error = false
 		return
 	},
-	"stop": func(command string) (event model.Event, _error bool) {
-		event = model.Event{}
+	"stop": func(arr []string) (event model.Event, _error bool) {
+		event = model.Event{
+			Time: deep.NewTime(),
+			Key:  arr[0],
+		}
 		_error = false
 		return
 	},
-	"help": func(command string) (event model.Event, _error bool) {
-		event = model.Event{}
+	"help": func(arr []string) (event model.Event, _error bool) {
+		event = model.Event{
+			Time: deep.NewTime(),
+			Key:  arr[0],
+		}
 		_error = false
 		return
 	},

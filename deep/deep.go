@@ -2,13 +2,16 @@ package deep
 
 import (
 	"bufio"
+	"fmt"
 	"main/constants"
 	"main/model"
 	"os"
 	"strings"
+	"time"
 )
 
 func LOG(event model.Event) {
+	PushToFile(constants.LOG_PATH, fmt.Sprintf("%#v", event))
 }
 
 func ITERATION_CYCLE() {
@@ -48,4 +51,21 @@ func WriteFile(data string, path string) bool {
 func PushToFile(path string, newText string) bool {
 	return WriteFile(strings.Join(
 		append(ReadFile(path), newText+"\n"), " \n"), path)
+}
+
+func CreateFile(path string) {
+	file, _ := os.Create(constants.Root + path)
+	defer file.Close()
+}
+
+func GenerateMaster() {
+
+}
+
+func ClearFile(path string) {
+	WriteFile("", path)
+}
+
+func NewTime() string {
+	return time.Now().Format("2006-01-02 15:04:05")
 }

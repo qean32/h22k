@@ -27,7 +27,7 @@ func ENTER_COMMAND() {
 				deep.LOG(event)
 				fmt.Printf("%+v \n", event)
 			} else {
-				fmt.Println(constants.NO_FIND_COMAND)
+				fmt.Println(constants.NO_FIND_COMMAND)
 			}
 		}
 	}
@@ -40,7 +40,7 @@ func HOF_ACCESS_ACTION(f model.EventFunction, event model.Event) {
 		return
 	}
 
-	fmt.Println("Command stop/")
+	fmt.Println(constants.STOP_COMMAND)
 }
 
 func INIT() {
@@ -57,7 +57,7 @@ func PARSE_EVENT(command string, key string) (event model.Event, _error bool) {
 	if fn == nil {
 		return
 	}
-	event, _error = fn(command)
+	event, _error = fn(strings.Split(command, " "))
 	return event, _error
 }
 
