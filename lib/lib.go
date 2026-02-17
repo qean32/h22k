@@ -19,14 +19,14 @@ func ENTER_COMMAND() {
 	if len(command) > 1 {
 		trimString := strings.TrimSpace(command)
 		key := strings.Split(trimString, " ")[0]
-		event, _error := PARSE_EVENT(trimString, key)
+		e, _error := PARSE_EVENT(trimString, key)
 
 		if !_error {
 			fn := KEY_FUNCTION[key]
 
 			if fn != nil {
-				fn(event)
-				deep.LOG(event)
+				fn(e)
+				deep.LOG(e)
 			} else {
 				fmt.Println(constants.UNDEFINED_COMMAND)
 			}
@@ -44,13 +44,13 @@ func INIT() {
 func PUSH_CYCLE() {
 }
 
-func PARSE_EVENT(command string, key string) (event model.Event, _error bool) {
+func PARSE_EVENT(command string, key string) (e model.Event, _error bool) {
 	fn := KEY_PARSE[key]
 
 	if fn == nil {
-		event, _error = SHORT_EVENT(strings.Split(command, " "))
+		e, _error = SHORT_EVENT(strings.Split(command, " "))
 		return
 	}
-	event, _error = fn(strings.Split(command, " "))
-	return event, _error
+	e, _error = fn(strings.Split(command, " "))
+	return e, _error
 }

@@ -78,15 +78,16 @@ var KEY_FUNCTION = map[string]model.EventFunction{
 		fmt.Println(strings.Join(deep.ReadFile(constants.COMMAND_PATH), "\n- "))
 		fmt.Println("")
 	},
-	"rm:c": func(e model.Event) {
-		filtered := FILTER(deep.TMP_COMMANDS, func(item []string) bool { return item[0] != e.KeyWord })
-		deep.TMP_COMMANDS = filtered
-		deep.WriteFile(strings.Join(deep.MatrixToArrayString(filtered), "\n"), constants.COMMAND_PATH)
-	},
+	"rm:c": deep.DECORATOR_ACCESS_ACTION(
+		func(e model.Event) {
+			filtered := FILTER(deep.TMP_COMMANDS, func(item []string) bool { return item[0] != e.KeyWord })
+			deep.TMP_COMMANDS = filtered
+			deep.WriteFile(strings.Join(deep.MatrixToArrayString(filtered), "\n"), constants.COMMAND_PATH)
+		}),
 }
 
 var KEY_PARSE = map[string]model.FnRerutnEvent{
-	"cripto": func(arr []string) (event model.Event, _error bool) {
+	"cripto": func(arr []string) (e model.Event, _error bool) {
 		payload := getPaylaod(arr)
 
 		if len(arr) < 3 || payload == "" {
@@ -94,7 +95,7 @@ var KEY_PARSE = map[string]model.FnRerutnEvent{
 			return
 		}
 
-		event = model.Event{
+		e = model.Event{
 			Time:     deep.NewTime(),
 			Key:      arr[0],
 			KeyWord:  arr[1],
@@ -104,13 +105,13 @@ var KEY_PARSE = map[string]model.FnRerutnEvent{
 		}
 		return
 	},
-	"ecripto": func(arr []string) (event model.Event, _error bool) {
+	"ecripto": func(arr []string) (e model.Event, _error bool) {
 		if len(arr) < 3 {
 			_error = true
 			return
 		}
 
-		event = model.Event{
+		e = model.Event{
 			Time:     deep.NewTime(),
 			Key:      arr[0],
 			KeyWord:  arr[1],
@@ -119,7 +120,7 @@ var KEY_PARSE = map[string]model.FnRerutnEvent{
 		}
 		return
 	},
-	"place": func(arr []string) (event model.Event, _error bool) {
+	"place": func(arr []string) (e model.Event, _error bool) {
 		payload := getPaylaod(arr)
 
 		if len(arr) < 3 || payload == "" {
@@ -127,7 +128,7 @@ var KEY_PARSE = map[string]model.FnRerutnEvent{
 			return
 		}
 
-		event = model.Event{
+		e = model.Event{
 			Time:    deep.NewTime(),
 			Key:     arr[0],
 			KeyWord: arr[1],
@@ -140,16 +141,16 @@ var KEY_PARSE = map[string]model.FnRerutnEvent{
 	"run:m": SHORT_EVENT_KEY,
 }
 
-func SHORT_EVENT(arr []string) (event model.Event, _error bool) {
-	event = model.Event{
+func SHORT_EVENT(arr []string) (e model.Event, _error bool) {
+	e = model.Event{
 		Time: deep.NewTime(),
 		Key:  arr[0],
 	}
 	return
 }
 
-func SHORT_EVENT_KEY(arr []string) (event model.Event, _error bool) {
-	event = model.Event{
+func SHORT_EVENT_KEY(arr []string) (e model.Event, _error bool) {
+	e = model.Event{
 		Time:    deep.NewTime(),
 		Key:     arr[0],
 		KeyWord: arr[1],

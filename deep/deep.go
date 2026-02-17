@@ -12,13 +12,11 @@ import (
 	"time"
 )
 
-func LOG(event model.Event) {
-	index := slices.IndexFunc(event.Flags, func(item string) bool {
+func LOG(e model.Event) {
+	if slices.IndexFunc(e.Flags, func(item string) bool {
 		return strings.TrimSpace(item) == "-nl"
-	})
-
-	if index == -1 {
-		PushToFile(constants.LOG_PATH, fmt.Sprintf("%#v", event))
+	}) == -1 {
+		PushToFile(constants.LOG_PATH, fmt.Sprintf("%#v", e))
 	}
 }
 
@@ -125,13 +123,15 @@ func ACCESS_ACTION() bool {
 	return false
 }
 
-func HOF_ACCESS_ACTION(f model.EventFunction, event model.Event) {
-	if ACCESS_ACTION() {
-		f(event)
-		return
-	}
+func DECORATOR_ACCESS_ACTION(f model.EventFunction) model.EventFunction {
+	return func(e model.Event) {
 
-	fmt.Println(constants.STOP_COMMAND)
+		if ACCESS_ACTION() {
+			f(e)
+		} else {
+			fmt.Println(constants.STOP_COMMAND)
+		}
+	}
 }
 
 func RunCommand(command string) {
