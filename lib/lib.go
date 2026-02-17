@@ -36,6 +36,8 @@ func ENTER_COMMAND() {
 }
 
 func INIT() {
+	constants.INIT_ROOT()
+	fmt.Println(constants.Root)
 	fmt.Println(constants.PROJECT_INIT)
 	deep.SET_DATA()
 	ENTER_COMMAND()

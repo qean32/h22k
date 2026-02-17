@@ -1,11 +1,26 @@
 package constants
 
+import (
+	"os"
+)
+
 const UNDEFINED_COMMAND = "Undefined command/"
 const ERROR_COMMAND = "Syntax error/"
 const STOP_COMMAND = "Command stop/"
 const UNDEFINED_WORD_KEY = "Undefined word key/"
 
-const Root = "./private"
+var mode = "prod"
+var Root = ""
+
+func INIT_ROOT() {
+	if mode == "dev" {
+		Root = "./private"
+	} else {
+		os.Mkdir(os.TempDir()+`\holoproject`, 0755)
+		Root = os.TempDir() + `\holoproject`
+	}
+}
+
 const LOG_PATH = "/log.asc"
 const COMMAND_PATH = "/command.asc"
 const DATA_PATH = "/data.asc"
@@ -26,18 +41,21 @@ var PROJECT_INIT = `
 var HelpMessage = `
  Holo Project
 
- -- hash
- -- dihash
+ -- cripto
+ -- ecripto
 
  -- stop
  -- drop
  -- master
 
- -- g:log
+ -- g:key
  -- c:log
 
  -- run
+ -- run:m
  -- place
  -- commands
+ -- comm
+ -- rm:c
 
 `

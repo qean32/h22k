@@ -12,8 +12,8 @@ import (
 
 var KEY_FUNCTION = map[string]model.EventFunction{
 	"cripto": func(e model.Event) {
-		deep.TMP_DATA = append(deep.TMP_DATA, []string{e.KeyWord, e.Payload})
 		deep.PushToFile(constants.DATA_PATH, fmt.Sprintf("%s %s", e.KeyWord, e.Payload))
+		deep.TMP_DATA = append(deep.TMP_DATA, []string{e.KeyWord, e.Payload})
 	},
 	"ecripto": func(e model.Event) {
 		index := slices.IndexFunc(deep.TMP_DATA, func(item []string) bool {
@@ -45,6 +45,7 @@ var KEY_FUNCTION = map[string]model.EventFunction{
 	},
 	"place": func(e model.Event) {
 		deep.PushToFile(constants.COMMAND_PATH, fmt.Sprintf("%s %s", e.KeyWord, e.Payload))
+		deep.TMP_COMMANDS = append(deep.TMP_COMMANDS, []string{e.KeyWord, e.Payload})
 	},
 	"run": func(e model.Event) {
 		index := slices.IndexFunc(deep.TMP_COMMANDS, func(item []string) bool {
